@@ -1,4 +1,4 @@
-import blockDropSound from "./assets/sounds/block-drop.mp3";
+import blockDropSound from "./assets/sounds/soft.mp3";
 
 function App() {
   const playSound = () => {
