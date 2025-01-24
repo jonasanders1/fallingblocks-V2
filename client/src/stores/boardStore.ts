@@ -103,4 +103,15 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
 
     set({ board: newBoard });
   },
+
+  dropPiece: () => {
+    const dropPosition = useBoardStore.getState().findDropPosition();
+    usePieceStore.setState((state) => ({
+      currentPiece: {
+        ...state.currentPiece,
+        position: dropPosition,
+      },
+    }));
+    useBoardStore.getState().lockPiece();
+  },
 }));
