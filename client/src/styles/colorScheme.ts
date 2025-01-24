@@ -1,73 +1,115 @@
-const colorScheme = {
-  // General Backgrounds
-  background: {
-    primary: "#1E1E2C", // Main background color
-    secondary: "#2C2C3A", // Slightly lighter background for containers
-    tertiary: "#3A3A48", // Even lighter for contrast
-    overlay: "#000000AA", // Transparent black for overlays
+const themes = {
+  dark: {
+    background: {
+      primary: "#1E1E2C",
+      secondary: "#2C2C3A",
+      tertiary: "#3A3A48",
+      overlay: "#000000AA",
+    },
+    text: {
+      primary: "#FFFFFF",
+      secondary: "#B0B0C3",
+      accent: "#66FCF1",
+      danger: "#FF6B6B",
+    },
+    blocks: {
+      I: "#4DD9E7",
+      O: "#F6DC7B",
+      T: "#C58EFF",
+      S: "#9BEF99",
+      Z: "#FF9C9C",
+      J: "#7C9FFF",
+      L: "#FFC78F",
+    },
+    borders: {
+      light: "#444455",
+      medium: "#666680",
+      strong: "#FFFFFF",
+    },
+    containers: {
+      primary: "#29293A",
+      secondary: "#353542",
+      hover: "#3D3D50",
+      active: "#4A4A66",
+    },
+    buttons: {
+      primary: "#66FCF1",
+      primaryHover: "#4FC8C1",
+      danger: "#FF6B6B",
+      dangerHover: "#D65353",
+      disabled: "#555555",
+    },
+    shadows: {
+      light: "rgba(0, 0, 0, 0.2)",
+      medium: "rgba(0, 0, 0, 0.4)",
+      strong: "rgba(0, 0, 0, 0.6)",
+    },
+    overlay: {
+      dim: "rgba(0, 0, 0, 0.6)",
+      blur: "rgba(46, 46, 68, 0.8)",
+    },
+    gradients: {
+      primary: "linear-gradient(135deg, #4DD9E7, #4A4A66)",
+      secondary: "linear-gradient(135deg, #C58EFF, #2C2C3A)",
+    },
   },
-
-  // Text Colors
-  text: {
-    primary: "#FFFFFF", // Main text color (white)
-    secondary: "#B0B0C3", // Subtle text color (light gray)
-    accent: "#66FCF1", // Accent text color (light teal)
-    danger: "#FF6B6B", // For error or warnings
+  light: {
+    background: {
+      primary: "#FFFFFF",
+      secondary: "#F5F5F7",
+      tertiary: "#EAEAEC",
+      overlay: "#00000077",
+    },
+    text: {
+      primary: "#1E1E2C",
+      secondary: "#4A4A66",
+      accent: "#008B85",
+      danger: "#DC3545",
+    },
+    blocks: {
+      I: "#00CDE1",
+      O: "#FFD700",
+      T: "#9B30FF",
+      S: "#32CD32",
+      Z: "#FF4444",
+      J: "#4169E1",
+      L: "#FFA500",
+    },
+    borders: {
+      light: "#E0E0E0",
+      medium: "#CCCCCC",
+      strong: "#1E1E2C",
+    },
+    containers: {
+      primary: "#FFFFFF",
+      secondary: "#F8F8F8",
+      hover: "#F0F0F0",
+      active: "#E8E8E8",
+    },
+    buttons: {
+      primary: "#008B85",
+      primaryHover: "#006D67",
+      danger: "#DC3545",
+      dangerHover: "#BD2130",
+      disabled: "#CCCCCC",
+    },
+    shadows: {
+      light: "rgba(0, 0, 0, 0.1)",
+      medium: "rgba(0, 0, 0, 0.2)",
+      strong: "rgba(0, 0, 0, 0.3)",
+    },
+    overlay: {
+      dim: "rgba(255, 255, 255, 0.8)",
+      blur: "rgba(255, 255, 255, 0.9)",
+    },
+    gradients: {
+      primary: "linear-gradient(135deg, #00CDE1, #4A4A66)",
+      secondary: "linear-gradient(135deg, #9B30FF, #F5F5F7)",
+    },
   },
+} as const;
 
-  // Tetromino Block Colors
-  blocks: {
-    I: "#4DD9E7", // Tweaked cyan for the I piece
-    O: "#F6DC7B", // Softened yellow for the O piece
-    T: "#C58EFF", // Relaxing purple for the T piece
-    S: "#9BEF99", // Calming green for the S piece
-    Z: "#FF9C9C", // Gentle red for the Z piece
-    J: "#7C9FFF", // Cool blue for the J piece
-    L: "#FFC78F", // Warm orange for the L piece
-  },
+export type ThemeType = keyof typeof themes;
+export type ColorScheme = typeof themes.dark;
 
-  // Borders and Outlines
-  borders: {
-    light: "#444455", // Light border for subtle outlines
-    medium: "#666680", // Medium border for containers
-    strong: "#FFFFFF", // Strong white border for high contrast
-  },
-
-  // Containers and Boxes
-  containers: {
-    primary: "#29293A", // Main container background
-    secondary: "#353542", // Slightly lighter for nested containers
-    hover: "#3D3D50", // Hover effect on containers
-    active: "#4A4A66", // Active container state
-  },
-
-  // UI Buttons
-  buttons: {
-    primary: "#66FCF1", // Main button background (teal)
-    primaryHover: "#4FC8C1", // Hover state for primary buttons
-    danger: "#FF6B6B", // Danger button background (red)
-    dangerHover: "#D65353", // Hover state for danger buttons
-    disabled: "#555555", // Disabled button state
-  },
-
-  // Shadows and Highlights
-  shadows: {
-    light: "rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
-    medium: "rgba(0, 0, 0, 0.4)", // Medium shadow for focus elements
-    strong: "rgba(0, 0, 0, 0.6)", // Strong shadow for modals or overlays
-  },
-
-  // Overlays and Effects
-  overlay: {
-    dim: "rgba(0, 0, 0, 0.6)", // Dimmed overlay for modals
-    blur: "rgba(46, 46, 68, 0.8)", // Background blur effect
-  },
-
-  // Gradients
-  gradients: {
-    primary: "linear-gradient(135deg, #4DD9E7, #4A4A66)",
-    secondary: "linear-gradient(135deg, #C58EFF, #2C2C3A)",
-  },
-};
-
-export default colorScheme;
+export default themes;

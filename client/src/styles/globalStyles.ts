@@ -1,7 +1,6 @@
 // globalStyles.ts
 
 import { createGlobalStyle } from "styled-components";
-import colorScheme from "./colorScheme";
 
 const GlobalStyles = createGlobalStyle`
   /* CSS Reset */
@@ -19,8 +18,8 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    background-color: ${colorScheme.background.primary};
-    color: ${colorScheme.text.primary};
+    background-color: ${({ theme }) => theme.background.primary};
+    color: ${({ theme }) => theme.text.primary};
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-size: 1rem;
     line-height: 1.5;
@@ -62,11 +61,11 @@ const GlobalStyles = createGlobalStyle`
     width: 8px;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: ${colorScheme.borders.medium};
+    background-color: ${({ theme }) => theme.borders.medium};
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: ${colorScheme.borders.strong};
+    background-color: ${({ theme }) => theme.borders.strong};
   }
 
 

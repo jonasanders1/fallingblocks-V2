@@ -1,16 +1,19 @@
-import blockDropSound from "./assets/sounds/soft.mp3";
+import { Route } from "react-router-dom";
+import { Routes } from "react-router-dom";
+
+// Pages
+import Home from "./pages/Home";
+import Game from "./pages/Game";
+import Layout from "./components/Layout/Layout";
 
 function App() {
-  const playSound = () => {
-    const audio = new Audio(blockDropSound);
-    audio.play();
-  };
-
   return (
-    <div>
-      <h1>Hello World</h1>
-      <button onClick={playSound}>Play Sound</button>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/game" element={<Game />} />
+      </Route>
+    </Routes>
   );
 }
 
