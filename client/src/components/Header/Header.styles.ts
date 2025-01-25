@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 export const StyledHeader = styled.header`
   background-color: ${({ theme }) => theme.containers.secondary};
   padding: 1rem 1rem;
-  box-shadow: 0 2px 4px ${({ theme }) => theme.shadows.light};
 `;
 
 export const Nav = styled.nav`

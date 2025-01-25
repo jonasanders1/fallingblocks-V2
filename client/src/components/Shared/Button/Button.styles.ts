@@ -72,7 +72,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
 
           &:hover:not(:disabled) {
             background-color: ${theme.buttons.dangerHover};
-            transform: translateY(-2px);
           }
         `;
       case "success":
@@ -82,7 +81,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
 
           &:hover:not(:disabled) {
             background-color: ${theme.buttons.successHover};
-            transform: translateY(-2px);
           }
         `;
       default:
@@ -92,7 +90,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
 
           &:hover:not(:disabled) {
             background-color: ${theme.buttons.primaryHover};
-            transform: translateY(-2px);
           }
         `;
     }

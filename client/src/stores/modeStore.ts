@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type GameMode = "singleplayer" | "multiplayer" | "battle-royale";
+export type GameMode = "" | "singleplayer" | "multiplayer" | "battle-royale";
 
 interface ModeStore {
   currentMode: GameMode;
@@ -9,7 +9,7 @@ interface ModeStore {
 }
 
 export const useModeStore = create<ModeStore>((set, get) => ({
-  currentMode: "singleplayer",
+  currentMode: "",
 
   setMode: (mode) => {
     set({ currentMode: mode });

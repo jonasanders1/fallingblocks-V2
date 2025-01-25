@@ -62,7 +62,7 @@ const themes = {
   light: {
     background: {
       primary: "#F8F8F8",
-      secondary: "#F5F5F7",
+      secondary: "#EDEDF0",
       tertiary: "#EAEAEC",
       overlay: "#00000077",
     },
