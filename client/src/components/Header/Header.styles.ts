@@ -27,3 +27,11 @@ export const NavLinks = styled.div`
   align-items: center;
   gap: 2rem;
 `;
+
+export const NavigationHeader = styled.div`
+  display: flex;
+  height: 50px;
+  background-color: ${({ theme }) => theme.containers.secondary};
+  align-items: center;
+  gap: 2rem;
+`;

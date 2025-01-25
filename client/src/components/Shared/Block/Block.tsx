@@ -6,7 +6,7 @@ interface BlockProps {
 }
 
 interface StyledBlockProps {
-  backgroundColor: string;
+  backgroundcolor: string;
 }
 
 const Block: React.FC<BlockProps> = ({ row, col }) => {
@@ -18,14 +18,14 @@ const Block: React.FC<BlockProps> = ({ row, col }) => {
       : theme.gameboard.cellColorLight;
   };
 
-  return <StyledBlock backgroundColor={getCheckerboardColor(row, col)} />;
+  return <StyledBlock backgroundcolor={getCheckerboardColor(row, col)} />;
 };
 
 const StyledBlock = styled.div<StyledBlockProps>`
   width: 25px;
   border-radius: 3px;
   aspect-ratio: 1/1;
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  background-color: ${({ backgroundcolor }) => backgroundcolor};
 `;
 
 export default Block;

@@ -49,7 +49,7 @@ const themes = {
       blur: "rgba(46, 46, 68, 0.8)",
     },
     gradients: {
-      primary: "linear-gradient(135deg, #4DD9E7, #4A4A66)",
+      primary: "linear-gradient(135deg, #2C2C3A, #1E1E2C)",
       secondary: "linear-gradient(135deg, #C58EFF, #2C2C3A)",
     },
     gameboard: {
@@ -109,7 +109,7 @@ const themes = {
       blur: "rgba(255, 255, 255, 0.9)",
     },
     gradients: {
-      primary: "linear-gradient(135deg, #00CDE1, #4A4A66)",
+      primary: "linear-gradient(135deg, #F5F5F7, #F8F8F8)",
       secondary: "linear-gradient(135deg, #9B30FF, #F5F5F7)",
     },
     gameboard: {

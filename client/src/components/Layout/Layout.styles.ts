@@ -8,8 +8,9 @@ export const LayoutContainer = styled.div`
 
 export const MainContent = styled.main`
   flex: 1;
-  padding: 2rem;
   display: flex;
+  align-items: center;
   position: relative;
+  margin: 0 auto;
+  background: ${({ theme }) => theme.background.primary};
 `;
-

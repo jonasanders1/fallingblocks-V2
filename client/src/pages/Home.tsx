@@ -12,7 +12,7 @@ const Home = () => {
         addictive and classic puzzle game.
       </p>
       <Link to="/game">
-        <Button>Play Now</Button>
+        <Button text="Play Now" />
       </Link>
     </StyledHome>
   );
