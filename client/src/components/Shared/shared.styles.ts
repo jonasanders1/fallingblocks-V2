@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StyledSidePanel = styled.div<{ side: "left" | "right" }>`
+export const StyledSidePanel = styled.div<{ $side: "left" | "right" }>`
   display: flex;
   background-color: ${({ theme }) => theme.containers.primary};
   align-items: center;
@@ -8,10 +8,10 @@ export const StyledSidePanel = styled.div<{ side: "left" | "right" }>`
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
-  ${({ side }) =>
-    side === "left" && `border-radius: 0.5rem 0.2rem 0.2rem 0.5rem;`}
-  ${({ side }) =>
-    side === "right" && `border-radius: 0.2rem 0.5rem 0.5rem 0.2rem;`}
+  ${({ $side }) =>
+    $side === "left" && `border-radius: 0.5rem 0.2rem 0.2rem 0.5rem;`}
+  ${({ $side }) =>
+    $side === "right" && `border-radius: 0.2rem 0.5rem 0.5rem 0.2rem;`}
 `;
 
 export const GameSideBox = styled.div`

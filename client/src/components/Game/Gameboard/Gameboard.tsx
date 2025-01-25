@@ -1,19 +1,19 @@
 import { useBoardStore } from "@/stores/boardStore";
 import styled from "styled-components";
 import Block from "../../Shared/Block/Block";
-import { VISIBLE_BOARD_HEIGHT } from "@/services/utils/board";
+import { HIDDEN_ROWS, TOTAL_BOARD_HEIGHT } from "@/services/utils/board";
 
 const Gameboard = () => {
   const board = useBoardStore((state) => state.board);
 
   return (
     <StyledGameboard>
-      {board.slice(0, VISIBLE_BOARD_HEIGHT).map((row, rowIndex) => (
+      {board.slice(HIDDEN_ROWS, TOTAL_BOARD_HEIGHT).map((row, rowIndex) => (
         <Row key={rowIndex}>
           {row.map((_, colIndex) => (
             <Block
               key={`${rowIndex}-${colIndex}`}
-              row={rowIndex}
+              row={rowIndex + HIDDEN_ROWS}
               col={colIndex}
             />
           ))}

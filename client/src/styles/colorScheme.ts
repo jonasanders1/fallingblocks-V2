@@ -20,6 +20,7 @@ const themes = {
       Z: "#FF9C9C",
       J: "#7C9FFF",
       L: "#FFC78F",
+      ghostBorderColor: "#F8F8F8",
     },
     borders: {
       light: "#444455",
@@ -80,6 +81,7 @@ const themes = {
       Z: "#FF4444",
       J: "#4169E1",
       L: "#FFA500",
+      ghostBorderColor: "#3A3A48",
     },
     borders: {
       light: "#E0E0E0",

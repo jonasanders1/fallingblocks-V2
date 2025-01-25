@@ -7,3 +7,4 @@ export const SPAWN_POSITION = {
   x: Math.floor(BOARD_WIDTH / 2) - 1,
   y: 2,
 } as const;
+

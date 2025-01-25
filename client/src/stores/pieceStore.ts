@@ -1,110 +1,86 @@
 import { create } from "zustand";
 import { TetrominoType } from "../services/utils/tetrominoes";
 import { SPAWN_POSITION } from "../services/utils/board";
-import { useBoardStore } from "./boardStore";
 
-interface PieceStore {
+interface PieceState {
   currentPiece: {
     type: TetrominoType;
     position: { x: number; y: number };
     rotation: number;
   };
-  holdPiece: TetrominoType | null;
   pieceQueue: TetrominoType[];
+  holdPiece: TetrominoType | null;
   canHold: boolean;
-
-  movePiece: (direction: { x: number; y: number }) => void;
+  generateNewPiece: () => void;
+  movePiece: (movement: { x: number; y: number }) => void;
   rotatePiece: () => void;
   holdCurrentPiece: () => void;
-  generateNewPiece: () => void;
   refillQueue: () => void;
 }
 
-export const usePieceStore = create<PieceStore>((set) => ({
+const PIECE_TYPES: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];
+
+export const usePieceStore = create<PieceState>((set) => ({
   currentPiece: {
-    type: "T",
+    type: "I",
     position: { ...SPAWN_POSITION },
     rotation: 0,
   },
-  holdPiece: null,
   pieceQueue: [],
+  holdPiece: null,
   canHold: true,
 
-  movePiece: (direction) =>
-    set((state) => {
-      const newPosition = {
-        x: state.currentPiece.position.x + direction.x,
-        y: state.currentPiece.position.y + direction.y,
-      };
-
-      if (useBoardStore.getState().isValidMove(newPosition)) {
-        return {
-          currentPiece: {
-            ...state.currentPiece,
-            position: newPosition,
-          },
-        };
-      }
-
-      return state;
-    }),
-
-  rotatePiece: () =>
-    set((state) => {
-      const newRotation = (state.currentPiece.rotation + 1) % 4;
-
-      if (
-        useBoardStore
-          .getState()
-          .isValidMove(state.currentPiece.position, newRotation)
-      ) {
-        return {
-          currentPiece: {
-            ...state.currentPiece,
-            rotation: newRotation,
-          },
-        };
-      }
-      return state;
-    }),
+  refillQueue: () => {
+    const shuffledPieces = [...PIECE_TYPES].sort(() => Math.random() - 0.5);
+    set({ pieceQueue: shuffledPieces });
+  },
 
   generateNewPiece: () =>
     set((state) => {
-      const [nextPiece, ...remainingPieces] = state.pieceQueue;
-      const pieces: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];
-      const randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+      if (state.pieceQueue.length === 0) {
+        state.pieceQueue = [...PIECE_TYPES].sort(() => Math.random() - 0.5);
+      }
 
+      const [nextPiece, ...remainingPieces] = state.pieceQueue;
       return {
         currentPiece: {
           type: nextPiece,
           position: { ...SPAWN_POSITION },
           rotation: 0,
         },
-        pieceQueue: [...remainingPieces, randomPiece],
+        pieceQueue: remainingPieces,
+        canHold: true,
       };
     }),
 
-  refillQueue: () =>
-    set(() => {
-      const pieces: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];
-      const initialQueue = Array.from({ length: 4 }, () => {
-        const randomIndex = Math.floor(Math.random() * pieces.length);
-        return pieces[randomIndex];
-      });
+  movePiece: (movement) =>
+    set((state) => ({
+      currentPiece: {
+        ...state.currentPiece,
+        position: {
+          x: state.currentPiece.position.x + movement.x,
+          y: state.currentPiece.position.y + movement.y,
+        },
+      },
+    })),
 
-      return { pieceQueue: initialQueue };
-    }),
+  rotatePiece: () =>
+    set((state) => ({
+      currentPiece: {
+        ...state.currentPiece,
+        rotation: (state.currentPiece.rotation + 1) % 4,
+      },
+    })),
 
   holdCurrentPiece: () =>
     set((state) => {
       if (!state.canHold) return state;
 
       const currentType = state.currentPiece.type;
-
       if (state.holdPiece === null) {
         const [next, ...remaining] = state.pieceQueue;
-        const pieces: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];
-        const randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+        const randomPiece = PIECE_TYPES[Math.floor(Math.random() * PIECE_TYPES.length)];
+
 
         return {
           holdPiece: currentType,
@@ -117,6 +93,8 @@ export const usePieceStore = create<PieceStore>((set) => ({
           pieceQueue: [...remaining, randomPiece],
         };
       }
+
+      console.log("Holding piece:", currentType);
 
       return {
         holdPiece: currentType,

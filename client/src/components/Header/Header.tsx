@@ -21,7 +21,7 @@ const Header = () => {
     return (
       <NavigationHeader>
         <Button
-          variant="navigation"
+          $variant="navigation"
           text="Return home"
           size="small"
           onClick={() => navigate("/")}

@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
 
 interface StyledButtonProps {
-  variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
+  $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
   size?: "small" | "medium" | "large";
-  fullWidth?: boolean;
+  $fullWidth?: boolean;
 }
 
 const sizeStyles = {
@@ -31,7 +31,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: ${({ fullWidth }) => (fullWidth ? "100%" : "auto")};
+  width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
 
   ${({ size = "medium" }) => sizeStyles[size]}
 
@@ -41,8 +41,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
     transform: none !important;
   }
 
-  ${({ variant, theme }) => {
-    switch (variant) {
+  ${({ $variant, theme }) => {
+    switch ($variant) {
       case "secondary":
         return css`
           background-color: ${theme.buttons.secondary};

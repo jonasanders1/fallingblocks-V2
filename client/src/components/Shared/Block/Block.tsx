@@ -1,31 +1,54 @@
 import styled, { useTheme } from "styled-components";
+import { useBoardStore } from "@/stores/boardStore";
 
 interface BlockProps {
   row: number;
   col: number;
 }
 
-interface StyledBlockProps {
-  backgroundcolor: string;
-}
-
 const Block: React.FC<BlockProps> = ({ row, col }) => {
   const theme = useTheme();
+  const getCellContent = useBoardStore((state) => state.getCellContent);
+  const content = getCellContent(row, col);
 
-  const getCheckerboardColor = (rowIndex: number, colIndex: number) => {
-    return (rowIndex + colIndex) % 2 === 0
-      ? theme.gameboard.cellColorDark
-      : theme.gameboard.cellColorLight;
+  const getBlockStyles = () => {
+    switch (content.type) {
+      case "filled":
+        return {
+          backgroundColor: theme.blocks[content.pieceType!],
+          border: "none",
+        };
+      case "ghost":
+        return {
+          backgroundColor:
+            (row + col) % 2 === 0
+              ? theme.gameboard.cellColorDark
+              : theme.gameboard.cellColorLight,
+          border: `2px dashed ${theme.blocks.ghostBorderColor}`,
+          opacity: 0.5,
+        };
+      case "empty":
+        return {
+          backgroundColor:
+            (row + col) % 2 === 0
+              ? theme.gameboard.cellColorDark
+              : theme.gameboard.cellColorLight,
+          border: "none",
+        };
+    }
   };
 
-  return <StyledBlock backgroundcolor={getCheckerboardColor(row, col)} />;
+  return <StyledBlock $styles={getBlockStyles()} />;
 };
 
-const StyledBlock = styled.div<StyledBlockProps>`
+const StyledBlock = styled.div<{
+  $styles: { backgroundColor: string; border: string; opacity?: number };
+}>`
   width: 25px;
-  border-radius: 3px;
   aspect-ratio: 1/1;
-  background-color: ${({ backgroundcolor }) => backgroundcolor};
+  border-radius: 3px;
+  background-color: ${({ $styles }) => $styles.backgroundColor};
+  border: ${({ $styles }) => $styles.border};
+  opacity: ${({ $styles }) => $styles.opacity ?? 1};
 `;
-
 export default Block;

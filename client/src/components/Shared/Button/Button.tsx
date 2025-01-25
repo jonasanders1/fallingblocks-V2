@@ -5,35 +5,35 @@ interface ButtonProps {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   text: string;
-  variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
+  $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   isLoading?: boolean;
-  fullWidth?: boolean;
+  $fullWidth?: boolean;
   type?: "button" | "submit" | "reset";
   ariaLabel?: string;
 }
 
 const Button = ({
   onClick,
-  variant = "primary",
+  $variant = "primary",
   size = "medium",
   text,
   icon,
   iconPosition = "left",
   disabled = false,
   isLoading = false,
-  fullWidth = false,
+  $fullWidth = false,
   type = "button",
   ariaLabel,
 }: ButtonProps) => {
   return (
     <StyledButton
       onClick={onClick}
-      variant={variant}
+      $variant={$variant}
       size={size}
       disabled={disabled || isLoading}
-      fullWidth={fullWidth}
+      $fullWidth={$fullWidth}
       type={type}
       aria-label={ariaLabel || text}
       aria-disabled={disabled || isLoading}

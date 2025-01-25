@@ -7,23 +7,23 @@ import { StyledSidePanel } from "@/components/Shared/shared.styles";
 import styled from "styled-components";
 
 interface GameContainerProps {
-  isPlayer: boolean;
+  $isPlayer: boolean;
 }
 
-const GameContainer = ({ isPlayer }: GameContainerProps) => {
+const GameContainer = ({ $isPlayer }: GameContainerProps) => {
   return (
-    <StyledGameContainer isPlayer={isPlayer}>
+    <StyledGameContainer $isPlayer={$isPlayer}>
       <GameHeader />
 
       <StyledGameboardContainer>
-        <StyledSidePanel side="left">
+        <StyledSidePanel $side="left">
           <PieceOnHold />
           <GameStats />
         </StyledSidePanel>
 
         <Gameboard />
 
-        <StyledSidePanel side="right">
+        <StyledSidePanel $side="right">
           <NextPieces />
         </StyledSidePanel>
       </StyledGameboardContainer>
@@ -31,7 +31,7 @@ const GameContainer = ({ isPlayer }: GameContainerProps) => {
   );
 };
 
-const StyledGameContainer = styled.div<{ isPlayer: boolean }>`
+const StyledGameContainer = styled.div<{ $isPlayer: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;

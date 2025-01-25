@@ -40,7 +40,6 @@ export const useGravityStore = create<GravityStore>((set, get) => ({
         pieceStore.movePiece({ x: 0, y: 1 });
       } else {
         boardStore.lockPiece();
-        pieceStore.generateNewPiece();
       }
     }, get().gravitySpeed);
 
