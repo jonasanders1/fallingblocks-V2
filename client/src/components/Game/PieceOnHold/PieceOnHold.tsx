@@ -1,5 +1,7 @@
+import { GameSideBox } from "@/components/Shared/shared.styles";
+
 const PieceOnHold = () => {
-  return <div>PieceOnHold</div>;
+  return <GameSideBox>Block</GameSideBox>;
 };
 
 export default PieceOnHold;

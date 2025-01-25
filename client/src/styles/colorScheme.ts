@@ -52,10 +52,16 @@ const themes = {
       primary: "linear-gradient(135deg, #4DD9E7, #4A4A66)",
       secondary: "linear-gradient(135deg, #C58EFF, #2C2C3A)",
     },
+    gameboard: {
+      background: "#1e1e1e",
+      secondary: "#2c2c2c",
+      cellColorDark: "#353542",
+      cellColorLight: "#3D3D50",
+    },
   },
   light: {
     background: {
-      primary: "#FFFFFF",
+      primary: "#F8F8F8",
       secondary: "#F5F5F7",
       tertiary: "#EAEAEC",
       overlay: "#00000077",
@@ -82,7 +88,7 @@ const themes = {
     },
     containers: {
       primary: "#FFFFFF",
-      secondary: "#F8F8F8",
+      secondary: "#F0F0F0",
       hover: "#F0F0F0",
       active: "#E8E8E8",
     },
@@ -105,6 +111,12 @@ const themes = {
     gradients: {
       primary: "linear-gradient(135deg, #00CDE1, #4A4A66)",
       secondary: "linear-gradient(135deg, #9B30FF, #F5F5F7)",
+    },
+    gameboard: {
+      background: "#FFFFFF",
+      secondary: "#F5F5F7",
+      cellColorDark: "#F5F5F7",
+      cellColorLight: "#EAEAEC",
     },
   },
 } as const;

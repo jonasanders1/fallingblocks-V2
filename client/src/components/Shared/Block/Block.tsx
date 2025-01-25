@@ -1,21 +1,31 @@
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 interface BlockProps {
-  color?: string; // Background color for the block
-  filled: boolean; // Whether the block is occupied
+  row: number;
+  col: number;
 }
 
-const StyledBlock = styled.div<BlockProps>`
-  width: 30px;
-  height: 30px;
-  background-color: ${({ filled, color }) =>
-    filled ? color || "gray" : "transparent"};
-  border: ${({ filled }) =>
-    filled ? "1px solid black" : "1px solid rgba(0, 0, 0, 0.1)"};
-`;
+interface StyledBlockProps {
+  backgroundColor: string;
+}
 
-const Block: React.FC<BlockProps> = ({ color, filled }) => {
-  return <StyledBlock color={color} filled={filled} />;
+const Block: React.FC<BlockProps> = ({ row, col }) => {
+  const theme = useTheme();
+
+  const getCheckerboardColor = (rowIndex: number, colIndex: number) => {
+    return (rowIndex + colIndex) % 2 === 0
+      ? theme.gameboard.cellColorDark
+      : theme.gameboard.cellColorLight;
+  };
+
+  return <StyledBlock backgroundColor={getCheckerboardColor(row, col)} />;
 };
+
+const StyledBlock = styled.div<StyledBlockProps>`
+  width: 25px;
+  border-radius: 3px;
+  aspect-ratio: 1/1;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+`;
 
 export default Block;

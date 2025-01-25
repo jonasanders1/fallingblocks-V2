@@ -1,7 +1,12 @@
 import GameContainer from "../components/Game/GameContainer";
 
 const Game = () => {
-  return <GameContainer />;
+  return (
+    <>
+      <GameContainer />
+      {/* <GameContainer /> */}
+    </>
+  );
 };
 
 export default Game;
