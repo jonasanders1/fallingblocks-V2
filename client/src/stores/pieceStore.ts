@@ -32,23 +32,24 @@ export const usePieceStore = create<PieceState>((set) => ({
 
   refillQueue: () => {
     const shuffledPieces = [...PIECE_TYPES].sort(() => Math.random() - 0.5);
-    set({ pieceQueue: shuffledPieces });
+    set({ pieceQueue: shuffledPieces.slice(0, 4) });
   },
 
   generateNewPiece: () =>
     set((state) => {
-      if (state.pieceQueue.length === 0) {
-        state.pieceQueue = [...PIECE_TYPES].sort(() => Math.random() - 0.5);
-      }
-
       const [nextPiece, ...remainingPieces] = state.pieceQueue;
+      
+      const randomPiece = PIECE_TYPES[Math.floor(Math.random() * PIECE_TYPES.length)];
+      
+      const newQueue = [...remainingPieces, randomPiece];
+
       return {
         currentPiece: {
           type: nextPiece,
           position: { ...SPAWN_POSITION },
           rotation: 0,
         },
-        pieceQueue: remainingPieces,
+        pieceQueue: newQueue,
         canHold: true,
       };
     }),
@@ -81,7 +82,6 @@ export const usePieceStore = create<PieceState>((set) => ({
         const [next, ...remaining] = state.pieceQueue;
         const randomPiece = PIECE_TYPES[Math.floor(Math.random() * PIECE_TYPES.length)];
 
-
         return {
           holdPiece: currentType,
           canHold: false,
@@ -93,8 +93,6 @@ export const usePieceStore = create<PieceState>((set) => ({
           pieceQueue: [...remaining, randomPiece],
         };
       }
-
-      console.log("Holding piece:", currentType);
 
       return {
         holdPiece: currentType,

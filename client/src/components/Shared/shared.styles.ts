@@ -1,17 +1,15 @@
 import styled from "styled-components";
 
-export const StyledSidePanel = styled.div<{ $side: "left" | "right" }>`
+export const StyledSegment = styled.div`
   display: flex;
-  background-color: ${({ theme }) => theme.containers.primary};
-  align-items: center;
-  height: fit-content;
   flex-direction: column;
-  padding: 1rem;
-  gap: 1rem;
-  ${({ $side }) =>
-    $side === "left" && `border-radius: 0.5rem 0.2rem 0.2rem 0.5rem;`}
-  ${({ $side }) =>
-    $side === "right" && `border-radius: 0.2rem 0.5rem 0.5rem 0.2rem;`}
+  align-items: center;
+  gap: 0.2rem;
+`;
+
+export const StyledSegmentTitle = styled.h4`
+  font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const GameSideBox = styled.div`

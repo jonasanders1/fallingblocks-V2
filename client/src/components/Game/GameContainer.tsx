@@ -3,7 +3,6 @@ import Gameboard from "./Gameboard/Gameboard";
 import PieceOnHold from "./PieceOnHold/PieceOnHold";
 import GameStats from "./GameStats/GameStats";
 import NextPieces from "./NextPieces/NextPieces";
-import { StyledSidePanel } from "@/components/Shared/shared.styles";
 import styled from "styled-components";
 
 interface GameContainerProps {
@@ -13,8 +12,7 @@ interface GameContainerProps {
 const GameContainer = ({ $isPlayer }: GameContainerProps) => {
   return (
     <StyledGameContainer $isPlayer={$isPlayer}>
-      <GameHeader />
-
+      <GameHeader $isPlayer={$isPlayer} />
       <StyledGameboardContainer>
         <StyledSidePanel $side="left">
           <PieceOnHold />
@@ -35,7 +33,7 @@ const StyledGameContainer = styled.div<{ $isPlayer: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
   margin: 0 auto;
 `;
 
@@ -43,8 +41,21 @@ const StyledGameboardContainer = styled.div`
   display: flex;
   border-radius: 1rem;
   width: fit-content;
-
   gap: 0.5rem;
+`;
+
+const StyledSidePanel = styled.div<{ $side: "left" | "right" }>`
+  display: flex;
+  background-color: ${({ theme }) => theme.containers.primary};
+  align-items: center;
+  height: fit-content;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1.5rem;
+  ${({ $side }) =>
+    $side === "left" && `border-radius: 0.5rem 0.2rem 0.2rem 0.5rem;`}
+  ${({ $side }) =>
+    $side === "right" && `border-radius: 0.2rem 0.5rem 0.5rem 0.2rem;`}
 `;
 
 export default GameContainer;
