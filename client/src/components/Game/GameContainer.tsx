@@ -1,29 +1,47 @@
 import GameHeader from "./GameHeader/GameHeader";
 import Gameboard from "./Gameboard/Gameboard";
-import PieceOnHold from "./PieceOnHold/PieceOnHold";
-import GameStats from "./GameStats/GameStats";
-import NextPieces from "./NextPieces/NextPieces";
+
 import styled from "styled-components";
+import SidePanel from "./SidePanel/SidePanel";
+import { usePieceStore } from "@/stores/pieceStore";
 
 interface GameContainerProps {
   $isPlayer: boolean;
 }
 
 const GameContainer = ({ $isPlayer }: GameContainerProps) => {
+  const { holdPiece } = usePieceStore();
+  const pieceQueue = usePieceStore((state) => state.pieceQueue);
+
   return (
     <StyledGameContainer $isPlayer={$isPlayer}>
       <GameHeader $isPlayer={$isPlayer} />
       <StyledGameboardContainer>
-        <StyledSidePanel $side="left">
-          <PieceOnHold />
-          <GameStats />
-        </StyledSidePanel>
-
+        <SidePanel
+          $side="left"
+          content={[
+            {
+              left: {
+                title: "Hold",
+                piece: `${holdPiece}`,
+              },
+            },
+          ]}
+        />
         <Gameboard />
-
-        <StyledSidePanel $side="right">
-          <NextPieces />
-        </StyledSidePanel>
+        <SidePanel
+          $side="right"
+          content={[
+            {
+              right: {
+                nextPieces: {
+                  title: "Next",
+                  pieces: pieceQueue,
+                },
+              },
+            },
+          ]}
+        />
       </StyledGameboardContainer>
     </StyledGameContainer>
   );
@@ -42,20 +60,6 @@ const StyledGameboardContainer = styled.div`
   border-radius: 1rem;
   width: fit-content;
   gap: 0.5rem;
-`;
-
-const StyledSidePanel = styled.div<{ $side: "left" | "right" }>`
-  display: flex;
-  background-color: ${({ theme }) => theme.containers.primary};
-  align-items: center;
-  height: fit-content;
-  flex-direction: column;
-  padding: 1rem;
-  gap: 1.5rem;
-  ${({ $side }) =>
-    $side === "left" && `border-radius: 0.5rem 0.2rem 0.2rem 0.5rem;`}
-  ${({ $side }) =>
-    $side === "right" && `border-radius: 0.2rem 0.5rem 0.5rem 0.2rem;`}
 `;
 
 export default GameContainer;
