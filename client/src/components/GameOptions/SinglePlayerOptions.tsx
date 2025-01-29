@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useGameStore } from "@/stores/gameStore";
+import { useModeStore } from "@/stores/modeStore";
 import {
   StyledOptionsContainer,
   StyledOptionGroup,
@@ -8,12 +8,12 @@ import {
 import Button from "../Shared/Button/Button";
 
 const SinglePlayerOptions = () => {
-  const [gameMode, setGameMode] = useState<"timed" | "endless">("timed");
-  const [timeLimit, setTimeLimit] = useState(180); // 3 minutes default
+  const { gameType, timeLimit, setGameType, setTimeLimit } = useModeStore();
   const setTimeRemaining = useGameStore((state) => state.setTimeRemaining);
 
   const handleModeChange = (mode: "timed" | "endless") => {
-    setGameMode(mode);
+    setGameType(mode);
+
     if (mode === "endless") {
       setTimeRemaining(Infinity);
     } else {
@@ -32,13 +32,13 @@ const SinglePlayerOptions = () => {
         <h3>Game Mode</h3>
         <StyledButtonGroup>
           <Button
-            $active={gameMode === "timed"}
+            $active={gameType === "timed"}
             onClick={() => handleModeChange("timed")}
             text="Timed Mode"
             size="medium"
           />
           <Button
-            $active={gameMode === "endless"}
+            $active={gameType === "endless"}
             onClick={() => handleModeChange("endless")}
             text="Endless Mode"
             size="medium"
@@ -46,7 +46,7 @@ const SinglePlayerOptions = () => {
         </StyledButtonGroup>
       </StyledOptionGroup>
 
-      {gameMode === "timed" && (
+      {gameType === "timed" && (
         <StyledOptionGroup>
           <h3>Time Limit</h3>
           <StyledButtonGroup>

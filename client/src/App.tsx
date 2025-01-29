@@ -6,8 +6,17 @@ import Home from "./pages/Home";
 import Game from "./pages/Game";
 import Layout from "./components/Layout/Layout";
 import GameOptions from "./pages/GameOptions";
+import { useEffect } from "react";
+import { useModeStore } from "./stores/modeStore";
 
 function App() {
+  const { currentMode } = useModeStore();
+  const { gameType, timeLimit } = useModeStore();
+
+  useEffect(() => {
+    console.log(gameType, timeLimit, currentMode);
+  }, [gameType, timeLimit, currentMode]);
+
   return (
     <Routes>
       <Route element={<Layout />}>

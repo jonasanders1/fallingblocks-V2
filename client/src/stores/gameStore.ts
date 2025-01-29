@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useGravityStore } from "./gravityStore";
 import { useBoardStore } from "./boardStore";
+import { useModeStore } from "./modeStore";
 import { BOARD_WIDTH, HIDDEN_ROWS } from "../services/utils/board";
 
 interface GameStore {
@@ -25,19 +26,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
   level: 1,
   linesCleared: 0,
   totalLinesCleared: 0,
-  timeRemaining: 90,
+  timeRemaining: useModeStore.getState().timeLimit,
   timerInterval: null,
   isGameOver: false,
   gameOverReason: null,
   setTimeRemaining: (time: number) => set({ timeRemaining: time }),
 
   resetState: () => {
+    const timeLimit = useModeStore.getState().timeLimit;
     set({
       score: 0,
       level: 1,
       linesCleared: 0,
       totalLinesCleared: 0,
-      timeRemaining: 90,
+      timeRemaining: timeLimit,
       isGameOver: false,
       gameOverReason: null,
     });
