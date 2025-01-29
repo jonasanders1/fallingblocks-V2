@@ -6,16 +6,16 @@ import SidePanel from "./SidePanel/SidePanel";
 import { usePieceStore } from "@/stores/pieceStore";
 
 interface GameContainerProps {
-  $isPlayer: boolean;
+  $isOpponent: boolean;
 }
 
-const GameContainer = ({ $isPlayer }: GameContainerProps) => {
+const GameContainer = ({ $isOpponent }: GameContainerProps) => {
   const { holdPiece } = usePieceStore();
   const pieceQueue = usePieceStore((state) => state.pieceQueue);
 
   return (
-    <StyledGameContainer $isPlayer={$isPlayer}>
-      <GameHeader $isPlayer={$isPlayer} />
+    <StyledGameContainer $isOpponent={$isOpponent}>
+      <GameHeader $isOpponent={$isOpponent} />
       <StyledGameboardContainer>
         <SidePanel
           $side="left"
@@ -47,7 +47,7 @@ const GameContainer = ({ $isPlayer }: GameContainerProps) => {
   );
 };
 
-const StyledGameContainer = styled.div<{ $isPlayer: boolean }>`
+const StyledGameContainer = styled.div<{ $isOpponent: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;

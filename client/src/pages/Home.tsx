@@ -11,8 +11,8 @@ const Home = () => {
         Challenge your friends and players from around the world in this
         addictive and classic puzzle game.
       </p>
-      <Link to="/game">
-        <Button text="Play Now" />
+      <Link to="/game-options">
+        <Button text="Play Now" $active={true} />
       </Link>
     </StyledHome>
   );

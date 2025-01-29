@@ -5,6 +5,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   text: string;
+  borderRadius?: "small" | "medium" | "large";
   $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
@@ -12,6 +13,7 @@ interface ButtonProps {
   $fullWidth?: boolean;
   type?: "button" | "submit" | "reset";
   ariaLabel?: string;
+  $active?: boolean;
 }
 
 const Button = ({
@@ -26,6 +28,8 @@ const Button = ({
   $fullWidth = false,
   type = "button",
   ariaLabel,
+  borderRadius = "medium",
+  $active = false,
 }: ButtonProps) => {
   return (
     <StyledButton
@@ -37,6 +41,8 @@ const Button = ({
       type={type}
       aria-label={ariaLabel || text}
       aria-disabled={disabled || isLoading}
+      $borderRadius={borderRadius}
+      $active={$active}
     >
       {isLoading ? (
         <>

@@ -1,7 +1,6 @@
 import { useModeStore } from "@/stores/modeStore";
 import SinglePlayerGame from "@/components/modes/SinglePlayerGame";
 import MultiplayerGame from "@/components/modes/MultiplayerGame";
-import ModeSelector from "@/components/ModeSelector/ModeSelector";
 
 const Game = () => {
   const currentMode = useModeStore((state) => state.currentMode);
@@ -15,14 +14,11 @@ const Game = () => {
       case "battle-royale":
         return <div>Battle Royale Mode (Coming Soon)</div>;
       default:
-        return <ModeSelector />;
+        return null;
     }
   };
-  if (currentMode === "") {
-    return <ModeSelector />;
-  } else {
-    return <>{renderGameMode()}</>;
-  }
+
+  return <>{renderGameMode()}</>;
 };
 
 export default Game;

@@ -12,7 +12,7 @@ interface GameStore {
   timerInterval: NodeJS.Timeout | null;
   isGameOver: boolean;
   gameOverReason: "blockout" | "timeout" | "lockout" | null;
-
+  setTimeRemaining: (time: number) => void;
   resetState: () => void;
   startTimer: () => void;
   stopTimer: () => void;
@@ -29,6 +29,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   timerInterval: null,
   isGameOver: false,
   gameOverReason: null,
+  setTimeRemaining: (time: number) => set({ timeRemaining: time }),
 
   resetState: () => {
     set({

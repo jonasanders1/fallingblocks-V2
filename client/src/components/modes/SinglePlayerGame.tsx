@@ -13,7 +13,7 @@ const SinglePlayerGame = () => {
     return () => endGame();
   }, []);
 
-  return <GameContainer $isPlayer={true} />;
+  return <GameContainer $isOpponent={true} />;
 };
 
 export default SinglePlayerGame;

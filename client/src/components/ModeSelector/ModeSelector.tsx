@@ -3,7 +3,7 @@ import Button from "../Shared/Button/Button";
 import styled from "styled-components";
 
 const ModeSelector = () => {
-  const setMode = useModeStore((state) => state.setMode);
+  const { currentMode, setMode } = useModeStore();
 
   const handleModeClick = (mode: GameMode) => {
     setMode(mode);
@@ -11,41 +11,45 @@ const ModeSelector = () => {
 
   return (
     <ModeSelectorContainer>
-      <h2>Select Game Mode</h2>
-      <ButtonGroup>
-        <Button
-          onClick={() => handleModeClick("singleplayer")}
-          text="Single Player"
-        />
-        <Button
-          onClick={() => handleModeClick("multiplayer")}
-          text="Multiplayer"
-        />
-        <Button
-          onClick={() => handleModeClick("battle-royale")}
-          text="Battle Royale"
-        />
-      </ButtonGroup>
+      <Button
+        borderRadius="large"
+        size="small"
+        onClick={() => handleModeClick("singleplayer")}
+        text="Single Player"
+        $active={currentMode === "singleplayer"}
+      />
+      <Button
+        borderRadius="large"
+        size="small"
+        onClick={() => handleModeClick("multiplayer")}
+        text="Multiplayer"
+        $active={currentMode === "multiplayer"}
+      />
+      <Button
+        borderRadius="large"
+        size="small"
+        onClick={() => handleModeClick("battle-royale")}
+        text="Battle Royale"
+      />
     </ModeSelectorContainer>
   );
 };
 
 const ModeSelectorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px 0px ${({ theme }) => theme.shadows.medium};
-  background-color: ${({ theme }) => theme.background.secondary};
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+
+  button {
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export default ModeSelector;

@@ -4,6 +4,8 @@ interface StyledButtonProps {
   $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
   size?: "small" | "medium" | "large";
   $fullWidth?: boolean;
+  $borderRadius?: "small" | "medium" | "large";
+  $active?: boolean;
 }
 
 const sizeStyles = {
@@ -21,19 +23,33 @@ const sizeStyles = {
   `,
 };
 
+const borderRadiusStyles = {
+  small: css`
+    border-radius: 5px;
+  `,
+  medium: css`
+    border-radius: 10px;
+  `,
+  large: css`
+    border-radius: 15px;
+  `,
+};
+
 export const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border: none;
-  border-radius: 5px;
+  flex: 1;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
 
   ${({ size = "medium" }) => sizeStyles[size]}
+  ${({ $borderRadius = "medium" }) =>
+    borderRadiusStyles[$borderRadius]}
 
   &:disabled {
     opacity: 0.6;
@@ -41,17 +57,19 @@ export const StyledButton = styled.button<StyledButtonProps>`
     transform: none !important;
   }
 
-  ${({ $variant, theme }) => {
+  ${({ $variant, theme, $active }) => {
     switch ($variant) {
       case "secondary":
         return css`
-          background-color: ${theme.buttons.secondary};
-          color: ${theme.text.primary};
-          border: 2px solid ${theme.buttons.secondary};
+          background-color: ${$active
+            ? theme.buttons.primary
+            : theme.buttons.inactive};
+          color: ${$active ? theme.background.primary : theme.text.secondary};
 
           &:hover:not(:disabled) {
-            background-color: transparent;
-            color: ${theme.buttons.secondary};
+            background-color: ${$active
+              ? theme.buttons.primaryHover
+              : theme.buttons.inactiveHover};
           }
         `;
       case "navigation":
@@ -85,13 +103,25 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       default:
         return css`
-          background-color: ${theme.buttons.primary};
-          color: ${theme.background.primary};
+          background-color: ${$active
+            ? theme.buttons.primary
+            : theme.buttons.inactive};
+          color: ${$active
+            ? theme.background.primary
+            : theme.text.secondary};
 
           &:hover:not(:disabled) {
-            background-color: ${theme.buttons.primaryHover};
+            background-color: ${$active
+              ? theme.buttons.primaryHover
+              : theme.buttons.inactiveHover};
           }
         `;
     }
   }}
+
+  ${({ $active }) =>
+    $active &&
+    css`
+      transform: scale(0.98);
+    `}
 `;

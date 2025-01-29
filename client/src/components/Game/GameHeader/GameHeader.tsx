@@ -1,21 +1,21 @@
 import placeholder from "@/assets/images/placeholder.png";
 import styled from "styled-components";
 import { useGameStore } from "@/stores/gameStore";
-const GameHeader = ({ $isPlayer }: { $isPlayer: boolean }) => {
+const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
   const { score } = useGameStore();
 
   return (
-    <StyledGameHeader $isPlayer={$isPlayer}>
+    <StyledGameHeader $isOpponent={$isOpponent}>
       <StyledImageContainer className="image-container">
         <img src={placeholder} alt="profile image placeholder" width={50} />
       </StyledImageContainer>
 
-      <StyledTextContainer>
+      <StyledTextContainer $isOpponent={$isOpponent}>
         <StyledPlayerName>Player Name</StyledPlayerName>
         <StyledPlayerRating>Rating: 1000</StyledPlayerRating>
       </StyledTextContainer>
 
-      <StyledScoreContainer>
+      <StyledScoreContainer $isOpponent={$isOpponent}>
         <h4>Score</h4>
         <StyledScore>{score}</StyledScore>
       </StyledScoreContainer>
@@ -23,9 +23,9 @@ const GameHeader = ({ $isPlayer }: { $isPlayer: boolean }) => {
   );
 };
 
-const StyledGameHeader = styled.div<{ $isPlayer: boolean }>`
+const StyledGameHeader = styled.div<{ $isOpponent: boolean }>`
   display: flex;
-  flex-direction: ${({ $isPlayer }) => ($isPlayer ? "row" : "row-reverse")};
+  flex-direction: ${({ $isOpponent }) => ($isOpponent ? "row-reverse" : "row")};
   align-items: center;
   padding: 0.5rem;
   background-color: ${({ theme }) => theme.containers.primary};
@@ -41,9 +41,11 @@ const StyledImageContainer = styled.div`
   overflow: hidden;
 `;
 
-const StyledTextContainer = styled.div`
+const StyledTextContainer = styled.div<{ $isOpponent: boolean }>`
   display: flex;
   flex-direction: column;
+  text-align: ${({ $isOpponent }) => ($isOpponent ? "right" : "left")};
+  flex-grow: 1;
   gap: 0.1rem;
 `;
 
@@ -57,8 +59,7 @@ const StyledPlayerRating = styled.h4`
   font-weight: 400;
 `;
 
-const StyledScoreContainer = styled.div`
-  margin-left: auto;
+const StyledScoreContainer = styled.div<{ $isOpponent: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 0.1rem;

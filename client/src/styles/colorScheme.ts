@@ -36,9 +36,15 @@ const themes = {
     buttons: {
       primary: "#66FCF1",
       primaryHover: "#4FC8C1",
+      secondary: "#353542",
+      secondaryHover: "#3D3D50",
+      inactive: "#3A3A48",
+      inactiveHover: "#4A4A66",
       danger: "#FF6B6B",
       dangerHover: "#D65353",
       disabled: "#555555",
+      success: "#4CAF50",
+      successHover: "#3D8B40",
     },
     shadows: {
       light: "rgba(0, 0, 0, 0.2)",
@@ -97,9 +103,15 @@ const themes = {
     buttons: {
       primary: "#008B85",
       primaryHover: "#006D67",
+      secondary: "#E5E5E5",
+      secondaryHover: "#D5D5D5",
+      inactive: "#F0F0F0",
+      inactiveHover: "#E8E8E8",
       danger: "#DC3545",
       dangerHover: "#BD2130",
       disabled: "#CCCCCC",
+      success: "#4CAF50",
+      successHover: "#3D8B40",
     },
     shadows: {
       light: "rgba(0, 0, 0, 0.1)",

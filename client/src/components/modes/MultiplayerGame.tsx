@@ -1,26 +1,28 @@
 import GameContainer from "@/components/Game/GameContainer";
 import { useGameCoordinator } from "@/stores/useGameCoordinator";
+import { useMultiplayerSync } from "@/hooks/useMultiplayerSync";
 import { useEffect } from "react";
-// import { useSocket } from '@/hooks/useSocket';
 
 const MultiplayerGame = () => {
   const { initGame, endGame } = useGameCoordinator();
-  // const socket = useSocket();
+  const { emitGameState } = useMultiplayerSync("room-id"); // You'll need to implement room management
 
   useEffect(() => {
     initGame();
-    // socket.connect();
+
+    // Emit state every 100ms
+    const syncInterval = setInterval(emitGameState, 100);
 
     return () => {
       endGame();
-      // socket.disconnect();
+      clearInterval(syncInterval);
     };
   }, []);
 
   return (
     <div style={{ display: "flex", gap: "2rem" }}>
-      <GameContainer $isPlayer={true} />
-      <GameContainer $isPlayer={false} />
+      <GameContainer $isOpponent={false} />
+      <GameContainer $isOpponent={true} />
     </div>
   );
 };

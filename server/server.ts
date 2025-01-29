@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -15,19 +15,30 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  // Send a test message to the client
+  socket.emit("test", "Hello from server!");
+
   socket.on("join_room", (roomId) => {
     socket.join(roomId);
-    console.log(`User joined room ${roomId}`);
-    // Handle room logic
+    console.log(`User ${socket.id} joined room ${roomId}`);
   });
 
-  socket.on("board_update", ({ roomId, board }) => {
-    socket.to(roomId).emit("opponent_board_update", board);
+  socket.on("leave_room", (roomId) => {
+    socket.leave(roomId);
+    console.log(`User ${socket.id} left room ${roomId}`);
   });
 
-  socket.on("score_update", ({ roomId, score }) => {
-    socket.to(roomId).emit("opponent_score_update", score);
+  socket.on("game_state_update", ({ roomId, state }) => {
+    socket.to(roomId).emit("opponent_state_update", state);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
   });
 });
 
-server.listen(3000);
+server.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
