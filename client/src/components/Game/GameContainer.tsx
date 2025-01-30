@@ -4,6 +4,8 @@ import Gameboard from "./Gameboard/Gameboard";
 import styled from "styled-components";
 import SidePanel from "./SidePanel/SidePanel";
 import { usePieceStore } from "@/stores/pieceStore";
+import { useGameStore } from "@/stores/gameStore";
+import GameOver from "./GameOver/GameOver";
 
 interface GameContainerProps {
   $isOpponent: boolean;
@@ -12,37 +14,41 @@ interface GameContainerProps {
 const GameContainer = ({ $isOpponent }: GameContainerProps) => {
   const { holdPiece } = usePieceStore();
   const pieceQueue = usePieceStore((state) => state.pieceQueue);
+  const isGameOver = useGameStore((state) => state.isGameOver);
 
   return (
     <StyledGameContainer $isOpponent={$isOpponent}>
-      <GameHeader $isOpponent={$isOpponent} />
-      <StyledGameboardContainer>
-        <SidePanel
-          $side="left"
-          content={[
-            {
-              left: {
-                title: "Hold",
-                piece: `${holdPiece}`,
-              },
-            },
-          ]}
-        />
-        <Gameboard />
-        <SidePanel
-          $side="right"
-          content={[
-            {
-              right: {
-                nextPieces: {
-                  title: "Next",
-                  pieces: pieceQueue,
+      {isGameOver && <GameOver />}
+      <>
+        <GameHeader $isOpponent={$isOpponent} />
+        <StyledGameboardContainer>
+          <SidePanel
+            $side="left"
+            content={[
+              {
+                left: {
+                  title: "Hold",
+                  piece: `${holdPiece}`,
                 },
               },
-            },
-          ]}
-        />
-      </StyledGameboardContainer>
+            ]}
+          />
+          <Gameboard />
+          <SidePanel
+            $side="right"
+            content={[
+              {
+                right: {
+                  nextPieces: {
+                    title: "Next",
+                    pieces: pieceQueue,
+                  },
+                },
+              },
+            ]}
+          />
+        </StyledGameboardContainer>
+      </>
     </StyledGameContainer>
   );
 };

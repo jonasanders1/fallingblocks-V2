@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { TetrominoType } from "../services/utils/tetrominoes";
 import { SPAWN_POSITION } from "../services/utils/board";
+import { useBoardStore } from "./boardStore";
 
 interface PieceState {
   currentPiece: {
@@ -38,15 +39,30 @@ export const usePieceStore = create<PieceState>((set) => ({
   generateNewPiece: () =>
     set((state) => {
       const [nextPiece, ...remainingPieces] = state.pieceQueue;
-      
       const randomPiece = PIECE_TYPES[Math.floor(Math.random() * PIECE_TYPES.length)];
-      
       const newQueue = [...remainingPieces, randomPiece];
 
+      // Try original spawn position first
+      const originalPosition = { ...SPAWN_POSITION, y: 2 };
+      
+      // If original position is valid, use it
+      if (useBoardStore.getState().isValidMove({ ...originalPosition, y: 2 })) {
+        return {
+          currentPiece: {
+            type: nextPiece,
+            position: originalPosition,
+            rotation: 0,
+          },
+          pieceQueue: newQueue,
+          canHold: true,
+        };
+      }
+
+      // If original position is blocked, use higher position
       return {
         currentPiece: {
           type: nextPiece,
-          position: { ...SPAWN_POSITION },
+          position: { ...SPAWN_POSITION }, // Uses y: -1 from SPAWN_POSITION
           rotation: 0,
         },
         pieceQueue: newQueue,

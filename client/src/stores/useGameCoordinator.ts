@@ -13,6 +13,7 @@ export const useGameCoordinator = () => {
   const initGame = useCallback(() => {
     // Reset all stores to initial state
     gameState.resetState();
+    board.resetBoard();
 
     // Initialize game pieces
     piece.refillQueue();

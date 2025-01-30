@@ -1,20 +1,23 @@
 import placeholder from "@/assets/images/placeholder.png";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useGameStore } from "@/stores/gameStore";
 import { useModeStore } from "@/stores/modeStore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfinity } from "@fortawesome/free-solid-svg-icons";
 
 const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
-  const { score, timeRemaining } = useGameStore();
+  const { timeRemaining } = useGameStore();
   const { gameType, timeLimit } = useModeStore();
+  const theme = useTheme();
 
   const getTimeProgress = () => {
     if (gameType === "endless") return 100;
     if (timeRemaining === Infinity) return 100;
-    return Math.max(0, Math.min(100, ( timeLimit) * 100));
+    return Math.max(0, Math.min(100, (timeRemaining / timeLimit) * 100));
   };
 
   const formatTime = () => {
-    if (gameType === "endless" || timeRemaining === Infinity) return "∞";
+    if (gameType === "endless" || timeRemaining === Infinity) return null;
     return `${Math.max(0, Math.ceil(timeRemaining))} s`;
   };
 
@@ -32,7 +35,17 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
       </div>
 
       <StyledTimeContainer $timeProgress={getTimeProgress()}>
-        <h4>{formatTime()}</h4>
+        {gameType === "endless" || timeRemaining === Infinity ? (
+          <h4>
+            <FontAwesomeIcon
+              icon={faInfinity}
+              size="lg"
+              color={theme.text.primary}
+            />
+          </h4>
+        ) : (
+          <h4>{formatTime()}</h4>
+        )}
       </StyledTimeContainer>
     </StyledGameHeader>
   );
@@ -45,7 +58,7 @@ const StyledGameHeader = styled.div<{ $isOpponent: boolean }>`
   background-color: ${({ theme }) => theme.background.secondary};
   gap: 1rem;
   position: relative;
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-radius: 0.5rem;
   overflow: hidden;
 `;
 
@@ -76,7 +89,7 @@ const StyledPlayerRating = styled.h4`
 
 const StyledTimeContainer = styled.div<{ $timeProgress: number }>`
   background-color: ${({ theme }) => theme.containers.secondary};
-  border-radius: 0.5rem;
+  border-radius: 0.5rem 0 0 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
@@ -88,15 +101,18 @@ const StyledTimeContainer = styled.div<{ $timeProgress: number }>`
   overflow: hidden;
   max-width: 100px;
   position: relative;
+
   &:before {
+    transition: width 0.2s ease;
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: ${({ $timeProgress }) => $timeProgress}%;
     height: 100%;
-    background-color: green;
-    opacity: 0.2;
+    background-color: ${({ $timeProgress }) =>
+      `hsl(${($timeProgress * 1.2).toFixed(0)}, 70%, 45%)`};
+    opacity: 0.3;
   }
   & h4 {
     z-index: 1;

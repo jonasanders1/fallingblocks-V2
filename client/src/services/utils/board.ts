@@ -5,6 +5,6 @@ export const BOARD_WIDTH = 10;
 
 export const SPAWN_POSITION = {
   x: Math.floor(BOARD_WIDTH / 2) - 1,
-  y: 2,
+  y: -1,
 } as const;
 

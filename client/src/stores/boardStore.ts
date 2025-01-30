@@ -4,6 +4,10 @@ import { rotateMatrix } from "../services/utils/rotateMatrix";
 import { TETROMINOES, TetrominoType } from "../services/utils/tetrominoes";
 import { usePieceStore } from "./pieceStore";
 import { useGameStore } from "./gameStore";
+import { useGravityStore } from "./gravityStore";
+import { playSound } from "@/services/utils/playSound";
+import dropSound from "@/assets/sounds/drop.mp3";
+
 
 interface BoardStore {
   board: (TetrominoType | null)[][];
@@ -16,6 +20,7 @@ interface BoardStore {
   findDropPosition: () => { x: number; y: number };
   getCellContent: (row: number, col: number) => CellContent;
   dropPiece: () => void;
+  resetBoard: () => void;
 }
 
 type CellContent = {
@@ -41,13 +46,20 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           const boardX = position.x + x;
           const boardY = position.y + y;
 
+          // Check horizontal bounds and bottom bound
           if (
             boardX < 0 ||
             boardX >= BOARD_WIDTH ||
-            boardY >= TOTAL_BOARD_HEIGHT ||
-            (boardY >= 0 && get().board[boardY][boardX] !== null)
+            boardY >= TOTAL_BOARD_HEIGHT
           ) {
             return false;
+          }
+
+          // Only check board collision if the piece part is in the actual board
+          if (boardY >= 0) {
+            if (get().board[boardY][boardX] !== null) {
+              return false;
+            }
           }
         }
       }
@@ -77,7 +89,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     // Process the board from bottom to top
     for (let row = TOTAL_BOARD_HEIGHT - 1; row >= 0; row--) {
       const isLineFull = board[row].every((cell) => cell !== null);
-      
+
       if (!isLineFull) {
         // Copy non-full line to new board
         for (let col = 0; col < BOARD_WIDTH; col++) {
@@ -120,20 +132,25 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       });
     });
 
-    // Update board state and clear lines before generating new piece
+    // Update board state
     set({ board: newBoard });
+    
+    // Clear lines and update score
     const linesCleared = get().clearLines();
-
-    // Update score if lines were cleared
     if (linesCleared > 0) {
       useGameStore.getState().updateScore(linesCleared);
     }
 
-    // Generate new piece only after board is updated and lines are cleared
-    usePieceStore.getState().generateNewPiece();
+    // Check for game over BEFORE generating new piece
+    const gameStore = useGameStore.getState();
+    if (gameStore.checkGameOver()) {
+      gameStore.stopTimer();
+      useGravityStore.getState().stopGravity();
+      return; // Exit without generating new piece
+    }
 
-    // Check for game over condition
-    useGameStore.getState().checkGameOver();
+    // Only generate new piece if game isn't over
+    usePieceStore.getState().generateNewPiece();
   },
 
   dropPiece: () => {
@@ -144,6 +161,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
         position: dropPosition,
       },
     }));
+    playSound(dropSound);
     useBoardStore.getState().lockPiece();
   },
 
@@ -198,5 +216,13 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     }
 
     return { type: "empty" };
+  },
+
+  resetBoard: () => {
+    set({
+      board: Array.from({ length: TOTAL_BOARD_HEIGHT }, () =>
+        Array(BOARD_WIDTH).fill(null)
+      ),
+    });
   },
 }));

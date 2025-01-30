@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { useGravityStore } from "./gravityStore";
 import { useBoardStore } from "./boardStore";
 import { useModeStore } from "./modeStore";
-import { BOARD_WIDTH, HIDDEN_ROWS } from "../services/utils/board";
+
+import { BOARD_WIDTH } from "../services/utils/board";
 
 interface GameStore {
   score: number;
@@ -53,6 +54,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const timer = setInterval(() => {
       set((state) => {
+        if (
+          state.timeRemaining === Infinity ||
+          useModeStore.getState().gameType === "endless"
+        ) {
+          return state;
+        }
+
         if (state.timeRemaining <= 0) {
           clearInterval(timer);
           get().checkGameOver();
@@ -103,27 +111,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   checkGameOver: () => {
     const boardStore = useBoardStore.getState();
-    let canPlacePiece = false;
+    const gravityStore = useGravityStore.getState();
 
-    // Try all positions in hidden rows
-    for (let y = 1; y >= -HIDDEN_ROWS; y--) {
-      const testPosition = {
-        x: Math.floor(BOARD_WIDTH / 2) - 1,
-        y,
-      };
+    // Only check original spawn position
+    const originalPosition = {
+      x: Math.floor(BOARD_WIDTH / 2) - 1,
+      y: 2,
+    };
 
-      if (boardStore.isValidMove(testPosition)) {
-        canPlacePiece = true;
-        break;
-      }
-    }
-
-    if (!canPlacePiece) {
+    if (!boardStore.isValidMove(originalPosition)) {
       set({
         isGameOver: true,
         gameOverReason: "blockout",
       });
       get().stopTimer();
+      gravityStore.stopGravity();
       return true;
     }
 
@@ -133,6 +135,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         gameOverReason: "timeout",
       });
       get().stopTimer();
+      gravityStore.stopGravity();
       return true;
     }
 
