@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { usePieceStore } from "./pieceStore";
 import { useBoardStore } from "./boardStore";
+import { useMenuStore } from "@/stores/menuStore";
 
 interface GravityStore {
   gravitySpeed: number;
@@ -25,7 +26,8 @@ export const useGravityStore = create<GravityStore>((set, get) => ({
     }
 
     const timer = setInterval(() => {
-      if (!get().isPlaying) return;
+      const { isMenuOpen } = useMenuStore.getState();
+      if (!get().isPlaying || isMenuOpen) return;
 
       const pieceStore = usePieceStore.getState();
       const boardStore = useBoardStore.getState();

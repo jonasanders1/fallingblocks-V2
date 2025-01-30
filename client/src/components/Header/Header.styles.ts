@@ -34,3 +34,9 @@ export const NavigationHeader = styled.div`
   align-items: center;
   gap: 2rem;
 `;
+
+export const MenuButton = styled.div`
+  button {
+    white-space: nowrap;
+  }
+`;

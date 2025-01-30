@@ -8,7 +8,6 @@ import { useGravityStore } from "./gravityStore";
 import { playSound } from "@/services/utils/playSound";
 import dropSound from "@/assets/sounds/drop.mp3";
 
-
 interface BoardStore {
   board: (TetrominoType | null)[][];
   clearLines: () => number;
@@ -134,7 +133,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
 
     // Update board state
     set({ board: newBoard });
-    
+
     // Clear lines and update score
     const linesCleared = get().clearLines();
     if (linesCleared > 0) {

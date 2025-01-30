@@ -2,15 +2,17 @@ import { useEffect } from "react";
 import { usePieceStore } from "@/stores/pieceStore";
 import { useBoardStore } from "@/stores/boardStore";
 import { useGravityStore } from "@/stores/gravityStore";
+import { useMenuStore } from "@/stores/menuStore";
 
 export const useGameControls = () => {
   const { movePiece, rotatePiece, holdCurrentPiece } = usePieceStore();
   const { isValidMove, dropPiece } = useBoardStore();
   const { isPlaying } = useGravityStore();
+  const { isMenuOpen } = useMenuStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isPlaying) return;
+      if (!isPlaying || isMenuOpen) return;
 
       const currentPiece = usePieceStore.getState().currentPiece;
 
@@ -79,5 +81,5 @@ export const useGameControls = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying]);
+  }, [isPlaying, isMenuOpen]);
 };

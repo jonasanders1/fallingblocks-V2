@@ -1,9 +1,8 @@
 import { styled } from "styled-components";
 
-
 export const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
+  top: 52px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -16,11 +15,17 @@ export const ModalOverlay = styled.div`
 
 export const ModalContent = styled.div`
   background-color: ${({ theme }) => theme.containers.primary};
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0.5rem;
   min-width: 300px;
   max-width: 90%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 2px 10px ${({ theme }) => theme.shadows.strong};
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

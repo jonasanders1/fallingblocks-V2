@@ -1,14 +1,11 @@
 import placeholder from "@/assets/images/placeholder.png";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import { useGameStore } from "@/stores/gameStore";
 import { useModeStore } from "@/stores/modeStore";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfinity } from "@fortawesome/free-solid-svg-icons";
 
 const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
   const { timeRemaining } = useGameStore();
   const { gameType, timeLimit } = useModeStore();
-  const theme = useTheme();
 
   const getTimeProgress = () => {
     if (gameType === "endless") return 100;
@@ -22,8 +19,8 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
   };
 
   return (
-    <StyledGameHeader $isOpponent={$isOpponent}>
-      <div style={{ padding: "0.5rem", display: "flex", gap: "1rem" }}>
+    <StyledGameHeader>
+      <StyledPlayerInfoContainer $isOpponent={$isOpponent}>
         <StyledImageContainer>
           <img src={placeholder} alt="profile image placeholder" width={50} />
         </StyledImageContainer>
@@ -32,34 +29,35 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
           <StyledPlayerName>Player Name</StyledPlayerName>
           <StyledPlayerRating>Rating: 1000</StyledPlayerRating>
         </StyledTextContainer>
-      </div>
+      </StyledPlayerInfoContainer>
 
-      <StyledTimeContainer $timeProgress={getTimeProgress()}>
-        {gameType === "endless" || timeRemaining === Infinity ? (
-          <h4>
-            <FontAwesomeIcon
-              icon={faInfinity}
-              size="lg"
-              color={theme.text.primary}
-            />
-          </h4>
-        ) : (
-          <h4>{formatTime()}</h4>
+      {gameType !== "endless" &&
+        timeRemaining !== Infinity &&
+        $isOpponent === false && (
+          <StyledTimeContainer $timeProgress={getTimeProgress()}>
+            <h4>{formatTime()}</h4>
+          </StyledTimeContainer>
         )}
-      </StyledTimeContainer>
     </StyledGameHeader>
   );
 };
 
-const StyledGameHeader = styled.div<{ $isOpponent: boolean }>`
+const StyledGameHeader = styled.div`
   display: flex;
-  flex-direction: ${({ $isOpponent }) => ($isOpponent ? "row-reverse" : "row")};
   justify-content: space-between;
   background-color: ${({ theme }) => theme.background.secondary};
   gap: 1rem;
   position: relative;
   border-radius: 0.5rem;
   overflow: hidden;
+`;
+
+const StyledPlayerInfoContainer = styled.div<{ $isOpponent: boolean }>`
+  display: flex;
+  flex-direction: ${({ $isOpponent }) => ($isOpponent ? "row-reverse" : "row")};
+  flex-grow: 1;
+  gap: 1rem;
+  padding: 0.5rem;
 `;
 
 const StyledImageContainer = styled.div`

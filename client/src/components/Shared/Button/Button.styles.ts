@@ -1,25 +1,38 @@
 import styled, { css } from "styled-components";
 
 interface StyledButtonProps {
-  $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
+  $variant?:
+    | "primary"
+    | "secondary"
+    | "navigation"
+    | "danger"
+    | "success"
+    | "icon";
   size?: "small" | "medium" | "large";
   $fullWidth?: boolean;
   $borderRadius?: "small" | "medium" | "large";
   $active?: boolean;
+  $isIconOnly?: boolean;
 }
 
 const sizeStyles = {
-  small: css`
-    padding: 0.5rem 1rem;
+  small: css<StyledButtonProps>`
+    padding: ${({ $isIconOnly }) => ($isIconOnly ? "0.5rem" : "0.5rem 1rem")};
     font-size: 0.875rem;
+    min-width: ${({ $isIconOnly }) => ($isIconOnly ? "2rem" : "auto")};
+    min-height: ${({ $isIconOnly }) => ($isIconOnly ? "2rem" : "auto")};
   `,
-  medium: css`
-    padding: 1rem 2rem;
+  medium: css<StyledButtonProps>`
+    padding: ${({ $isIconOnly }) => ($isIconOnly ? "0.75rem" : "1rem 2rem")};
     font-size: 1rem;
+    min-width: ${({ $isIconOnly }) => ($isIconOnly ? "2.5rem" : "auto")};
+    min-height: ${({ $isIconOnly }) => ($isIconOnly ? "2.5rem" : "auto")};
   `,
-  large: css`
-    padding: 1.25rem 2.5rem;
+  large: css<StyledButtonProps>`
+    padding: ${({ $isIconOnly }) => ($isIconOnly ? "1rem" : "1.25rem 2.5rem")};
     font-size: 1.125rem;
+    min-width: ${({ $isIconOnly }) => ($isIconOnly ? "3rem" : "auto")};
+    min-height: ${({ $isIconOnly }) => ($isIconOnly ? "3rem" : "auto")};
   `,
 };
 
@@ -41,15 +54,18 @@ export const StyledButton = styled.button<StyledButtonProps>`
   justify-content: center;
   gap: 0.5rem;
   border: none;
-  flex: 1;
+  flex: ${({ $isIconOnly, $fullWidth }) =>
+    $isIconOnly ? "0" : $fullWidth ? "1" : "0"};
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
+  width: ${({ $fullWidth, $isIconOnly }) =>
+    $isIconOnly ? "auto" : $fullWidth ? "100%" : "auto"};
+  aspect-ratio: ${({ $isIconOnly }) => ($isIconOnly ? "1/1" : "auto")};
+  white-space: nowrap;
 
   ${({ size = "medium" }) => sizeStyles[size]}
-  ${({ $borderRadius = "medium" }) =>
-    borderRadiusStyles[$borderRadius]}
+  ${({ $borderRadius = "medium" }) => borderRadiusStyles[$borderRadius]}
 
   &:disabled {
     opacity: 0.6;
@@ -106,9 +122,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
           background-color: ${$active
             ? theme.buttons.primary
             : theme.buttons.inactive};
-          color: ${$active
-            ? theme.background.primary
-            : theme.text.secondary};
+          color: ${$active ? theme.background.primary : theme.text.secondary};
 
           &:hover:not(:disabled) {
             background-color: ${$active

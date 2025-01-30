@@ -42,11 +42,6 @@ const ModeSelectorContainer = styled.div`
   width: 100%;
   margin-top: 1rem;
 
-  button {
-    width: 100%;
-    white-space: nowrap;
-  }
-
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }

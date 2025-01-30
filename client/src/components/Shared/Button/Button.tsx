@@ -4,9 +4,15 @@ interface ButtonProps {
   onClick?: () => void;
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
-  text: string;
+  text?: string;
   borderRadius?: "small" | "medium" | "large";
-  $variant?: "primary" | "secondary" | "navigation" | "danger" | "success";
+  $variant?:
+    | "primary"
+    | "secondary"
+    | "navigation"
+    | "danger"
+    | "success"
+    | "icon";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   isLoading?: boolean;
@@ -31,6 +37,8 @@ const Button = ({
   borderRadius = "medium",
   $active = false,
 }: ButtonProps) => {
+  const isIconOnly: boolean = Boolean($variant === "icon" && icon && !text);
+
   return (
     <StyledButton
       onClick={onClick}
@@ -43,6 +51,7 @@ const Button = ({
       aria-disabled={disabled || isLoading}
       $borderRadius={borderRadius}
       $active={$active}
+      $isIconOnly={isIconOnly}
     >
       {isLoading ? (
         <>
@@ -50,9 +59,15 @@ const Button = ({
         </>
       ) : (
         <>
-          {iconPosition === "left" && icon}
-          {text}
-          {iconPosition === "right" && icon}
+          {isIconOnly ? (
+            icon
+          ) : (
+            <>
+              {iconPosition === "left" && icon}
+              {text}
+              {iconPosition === "right" && icon}
+            </>
+          )}
         </>
       )}
     </StyledButton>
