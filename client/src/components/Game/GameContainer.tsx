@@ -82,7 +82,7 @@ const GameContainer = ({ $isOpponent }: GameContainerProps) => {
             />
             <Button
               onClick={() => {
-                // Add quit logic
+                navigate("/");
               }}
               text="Quit"
             />

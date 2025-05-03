@@ -21,6 +21,7 @@ const ModeSelector = () => {
       <Button
         borderRadius="large"
         size="small"
+        disabled={true}
         onClick={() => handleModeClick("multiplayer")}
         text="Multiplayer"
         $active={currentMode === "multiplayer"}
@@ -28,6 +29,7 @@ const ModeSelector = () => {
       <Button
         borderRadius="large"
         size="small"
+        disabled={true}
         onClick={() => handleModeClick("battle-royale")}
         text="Battle Royale"
       />
