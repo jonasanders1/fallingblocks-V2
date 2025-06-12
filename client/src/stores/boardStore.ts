@@ -134,11 +134,17 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     // Update board state
     set({ board: newBoard });
 
-    // Clear lines and update score
+    // Get drop information before clearing lines
+    const pieceStore = usePieceStore.getState();
+    const { lastDropDistance, isHardDrop } = pieceStore;
+
+    // Clear lines and update score with drop information
     const linesCleared = get().clearLines();
-    if (linesCleared > 0) {
-      useGameStore.getState().updateScore(linesCleared);
-    }
+    // Always call updateScore to handle combo reset when no lines are cleared
+    useGameStore.getState().updateScore(linesCleared, isHardDrop, lastDropDistance);
+
+    // Reset drop state
+    pieceStore.resetDropState();
 
     // Check for game over BEFORE generating new piece
     const gameStore = useGameStore.getState();

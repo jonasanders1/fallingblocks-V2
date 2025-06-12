@@ -11,14 +11,17 @@ interface GameStore {
   linesCleared: number;
   totalLinesCleared: number;
   timeRemaining: number;
+  elapsedTime: number;
   timerInterval: NodeJS.Timeout | null;
   isGameOver: boolean;
   gameOverReason: "blockout" | "timeout" | "lockout" | null;
+  comboCount: number;
+  lastLineClear: number;
   setTimeRemaining: (time: number) => void;
   resetState: () => void;
   startTimer: () => void;
   stopTimer: () => void;
-  updateScore: (clearedLines: number) => void;
+  updateScore: (clearedLines: number, isHardDrop?: boolean, dropDistance?: number) => void;
   checkGameOver: () => boolean;
 }
 
@@ -28,9 +31,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   linesCleared: 0,
   totalLinesCleared: 0,
   timeRemaining: useModeStore.getState().timeLimit,
+  elapsedTime: 0,
   timerInterval: null,
   isGameOver: false,
   gameOverReason: null,
+  comboCount: 0,
+  lastLineClear: 0,
   setTimeRemaining: (time: number) => set({ timeRemaining: time }),
 
   resetState: () => {
@@ -41,8 +47,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       linesCleared: 0,
       totalLinesCleared: 0,
       timeRemaining: timeLimit,
+      elapsedTime: 0,
       isGameOver: false,
       gameOverReason: null,
+      comboCount: 0,
+      lastLineClear: 0,
     });
   },
 
@@ -54,19 +63,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const timer = setInterval(() => {
       set((state) => {
-        if (
-          state.timeRemaining === Infinity ||
-          useModeStore.getState().gameType === "endless"
-        ) {
+        if (state.isGameOver) {
+          clearInterval(timer);
           return state;
         }
 
-        if (state.timeRemaining <= 0) {
-          clearInterval(timer);
-          get().checkGameOver();
-          return { timeRemaining: 0 };
+        const newElapsedTime = state.elapsedTime + 1;
+        let newTimeRemaining = state.timeRemaining;
+
+        if (
+          state.timeRemaining !== Infinity &&
+          useModeStore.getState().gameType === "timed"
+        ) {
+          newTimeRemaining = Math.max(0, state.timeRemaining - 1);
+          if (newTimeRemaining <= 0) {
+            clearInterval(timer);
+            get().checkGameOver();
+          }
         }
-        return { timeRemaining: state.timeRemaining - 1 };
+
+        return { 
+          timeRemaining: newTimeRemaining,
+          elapsedTime: newElapsedTime
+        };
       });
     }, 1000);
 
@@ -81,18 +100,36 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ timerInterval: null });
   },
 
-  updateScore: (clearedLines) => {
-    if (clearedLines === 0) return;
+  updateScore: (clearedLines: number, isHardDrop = false, dropDistance = 0) => {
+    // Reset combo if no lines are cleared
+    if (clearedLines === 0) {
+      set({ comboCount: 0, lastLineClear: 0 });
+      return;
+    }
 
-    const basePoints = 100;
-    const multipliers = [1, 2.5, 7.5, 15]; // Multipliers for 1, 2, 3, or 4 lines
-    const scoreIncrease = Math.floor(
-      basePoints * (multipliers[clearedLines - 1] || 0)
-    );
+    // Base points for line clears
+    const basePoints = {
+      1: 100,  // Single
+      2: 300,  // Double
+      3: 500,  // Triple
+      4: 800,  // Tetris
+    }[clearedLines] || 0;
+
+    // Combo bonus
+    const currentCombo = get().comboCount;
+    const comboMultiplier = Math.max(1, currentCombo * 0.5); // 1x, 1.5x, 2x, 2.5x, etc.
+
+    // Drop bonus
+    const dropBonus = isHardDrop ? dropDistance * 2 : dropDistance;
 
     set((state) => {
       const newTotalLines = state.totalLinesCleared + clearedLines;
       const newLevel = Math.floor(newTotalLines / 10) + 1;
+      const levelMultiplier = newLevel;
+
+      // Calculate total score
+      const lineClearScore = basePoints * levelMultiplier * comboMultiplier;
+      const totalScore = state.score + lineClearScore + dropBonus;
 
       // Update gravity speed based on level
       if (newLevel !== state.level) {
@@ -101,10 +138,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
 
       return {
-        score: state.score + scoreIncrease,
+        score: totalScore,
         linesCleared: clearedLines,
         totalLinesCleared: newTotalLines,
         level: newLevel,
+        comboCount: currentCombo + 1,
+        lastLineClear: clearedLines,
       };
     });
   },

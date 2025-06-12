@@ -4,7 +4,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { useModeStore } from "@/stores/modeStore";
 
 const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
-  const { timeRemaining } = useGameStore();
+  const { timeRemaining, score } = useGameStore();
   const { gameType, timeLimit } = useModeStore();
 
   const getTimeProgress = () => {
@@ -15,7 +15,9 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
 
   const formatTime = () => {
     if (gameType === "endless" || timeRemaining === Infinity) return null;
-    return `${Math.max(0, Math.ceil(timeRemaining))} s`;
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = Math.ceil(timeRemaining % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -27,7 +29,7 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
 
         <StyledTextContainer $isOpponent={$isOpponent}>
           <StyledPlayerName>Player Name</StyledPlayerName>
-          <StyledPlayerRating>Rating: 1000</StyledPlayerRating>
+          <StyledPlayerRating>{score}</StyledPlayerRating>
         </StyledTextContainer>
       </StyledPlayerInfoContainer>
 
@@ -45,7 +47,7 @@ const GameHeader = ({ $isOpponent }: { $isOpponent: boolean }) => {
 const StyledGameHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.background.secondary};
+  background-color: ${({ theme }) => theme.containers.primary};
   gap: 1rem;
   position: relative;
   border-radius: 0.5rem;

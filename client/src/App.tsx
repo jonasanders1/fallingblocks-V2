@@ -4,9 +4,10 @@ import { Routes } from "react-router-dom";
 // Pages
 import Home from "./pages/Home";
 import Game from "./pages/Game";
-import GameOver from "./pages/GameOver";
+
 import Layout from "./components/Layout/Layout";
 import GameOptions from "./pages/GameOptions";
+import Leaderboard from "./pages/Leaderboard";
 
 // Hooks
 import { useEffect } from "react";
@@ -26,7 +27,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/game-options" element={<GameOptions />} />
         <Route path="/game" element={<Game />} />
-        <Route path="/game-over" element={<GameOver />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Route>
     </Routes>
   );

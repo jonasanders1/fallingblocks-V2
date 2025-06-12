@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 
 export const ModalOverlay = styled.div`
   position: fixed;
-  top: 52px;
+  top: 0px;
   left: 0;
   right: 0;
   bottom: 0;

@@ -12,11 +12,14 @@ interface PieceState {
   pieceQueue: TetrominoType[];
   holdPiece: TetrominoType | null;
   canHold: boolean;
+  lastDropDistance: number;
+  isHardDrop: boolean;
   generateNewPiece: () => void;
-  movePiece: (movement: { x: number; y: number }) => void;
+  movePiece: (movement: { x: number; y: number }, isHardDrop?: boolean) => void;
   rotatePiece: () => void;
   holdCurrentPiece: () => void;
   refillQueue: () => void;
+  resetDropState: () => void;
 }
 
 const PIECE_TYPES: TetrominoType[] = ["I", "O", "T", "S", "Z", "J", "L"];
@@ -30,6 +33,10 @@ export const usePieceStore = create<PieceState>((set) => ({
   pieceQueue: [],
   holdPiece: null,
   canHold: true,
+  lastDropDistance: 0,
+  isHardDrop: false,
+
+  resetDropState: () => set({ lastDropDistance: 0, isHardDrop: false }),
 
   refillQueue: () => {
     const shuffledPieces = [...PIECE_TYPES].sort(() => Math.random() - 0.5);
@@ -70,16 +77,25 @@ export const usePieceStore = create<PieceState>((set) => ({
       };
     }),
 
-  movePiece: (movement) =>
-    set((state) => ({
-      currentPiece: {
-        ...state.currentPiece,
-        position: {
-          x: state.currentPiece.position.x + movement.x,
-          y: state.currentPiece.position.y + movement.y,
+  movePiece: (movement, isHardDrop = false) =>
+    set((state) => {
+      const newPosition = {
+        x: state.currentPiece.position.x + movement.x,
+        y: state.currentPiece.position.y + movement.y,
+      };
+
+      // Track drop distance for scoring
+      const dropDistance = movement.y > 0 ? movement.y : 0;
+
+      return {
+        currentPiece: {
+          ...state.currentPiece,
+          position: newPosition,
         },
-      },
-    })),
+        lastDropDistance: dropDistance,
+        isHardDrop: isHardDrop,
+      };
+    }),
 
   rotatePiece: () =>
     set((state) => ({

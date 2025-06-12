@@ -46,7 +46,7 @@ export const useGameControls = () => {
               y: currentPiece.position.y + 1,
             })
           ) {
-            movePiece({ x: 0, y: 1 });
+            movePiece({ x: 0, y: 1 }, false); // Soft drop
           }
           break;
 
@@ -67,10 +67,11 @@ export const useGameControls = () => {
           break;
         }
 
-        case "Space":
+        case "Space": {
           event.preventDefault();
           dropPiece();
           break;
+        }
 
         case "ShiftLeft":
         case "ShiftRight":
