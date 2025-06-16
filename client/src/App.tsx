@@ -12,6 +12,7 @@ import Leaderboard from "./pages/Leaderboard";
 // Hooks
 import { useEffect } from "react";
 import { useModeStore } from "./stores/modeStore";
+import { SoundEffects } from '@/components/Game/SoundEffects';
 
 function App() {
   const { currentMode } = useModeStore();
@@ -22,14 +23,17 @@ function App() {
   }, [gameType, timeLimit, currentMode]);
 
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/game-options" element={<GameOptions />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-      </Route>
-    </Routes>
+    <>
+      <SoundEffects />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/game-options" element={<GameOptions />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

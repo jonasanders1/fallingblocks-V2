@@ -1,9 +1,13 @@
 import { create } from "zustand";
+import { useModeStore } from "./modeStore";
+import { BOARD_WIDTH } from "../services/utils/board";
+import { ScoreManager } from "@/services/game/ScoreManager";
 import { useGravityStore } from "./gravityStore";
 import { useBoardStore } from "./boardStore";
-import { useModeStore } from "./modeStore";
-
-import { BOARD_WIDTH } from "../services/utils/board";
+import { SoundManager } from "@/services/game/SoundManager";
+import { SOUND_ASSETS, SOUND_KEYS } from "@/constants/sounds";
+import { calculateGravitySpeed } from "@/services/utils/gravity";
+import { useUIStore } from '@/stores/UIStore';
 
 interface GameStore {
   score: number;
@@ -21,9 +25,20 @@ interface GameStore {
   resetState: () => void;
   startTimer: () => void;
   stopTimer: () => void;
-  updateScore: (clearedLines: number, isHardDrop?: boolean, dropDistance?: number) => void;
+  updateScore: (
+    clearedLines: number,
+    isHardDrop?: boolean,
+    dropDistance?: number
+  ) => void;
   checkGameOver: () => boolean;
+  scoreManager: ScoreManager;
 }
+
+const scoreManager = new ScoreManager();
+
+// Initialize SoundManager and preload sounds
+const soundManager = SoundManager.getInstance();
+soundManager.preloadSounds(SOUND_ASSETS);
 
 export const useGameStore = create<GameStore>((set, get) => ({
   score: 0,
@@ -37,6 +52,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gameOverReason: null,
   comboCount: 0,
   lastLineClear: 0,
+  scoreManager,
   setTimeRemaining: (time: number) => set({ timeRemaining: time }),
 
   resetState: () => {
@@ -82,9 +98,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
           }
         }
 
-        return { 
+        return {
           timeRemaining: newTimeRemaining,
-          elapsedTime: newElapsedTime
+          elapsedTime: newElapsedTime,
         };
       });
     }, 1000);
@@ -101,51 +117,68 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   updateScore: (clearedLines: number, isHardDrop = false, dropDistance = 0) => {
-    // Reset combo if no lines are cleared
-    if (clearedLines === 0) {
-      set({ comboCount: 0, lastLineClear: 0 });
-      return;
-    }
+    const state = get();
+    let additionalPoints = 0;
 
-    // Base points for line clears
-    const basePoints = {
-      1: 100,  // Single
-      2: 300,  // Double
-      3: 500,  // Triple
-      4: 800,  // Tetris
-    }[clearedLines] || 0;
+    // Calculate line clear score
+    if (clearedLines > 0) {
+      const lineScore = state.scoreManager.calculateLineScore(
+        clearedLines,
+        state.level,
+        state.comboCount
+      );
+      additionalPoints += lineScore;
 
-    // Combo bonus
-    const currentCombo = get().comboCount;
-    const comboMultiplier = Math.max(1, currentCombo * 0.5); // 1x, 1.5x, 2x, 2.5x, etc.
+      // Calculate drop score
+      if (dropDistance > 0) {
+        additionalPoints += state.scoreManager.calculateDropScore(
+          dropDistance,
+          isHardDrop
+        );
+      }
 
-    // Drop bonus
-    const dropBonus = isHardDrop ? dropDistance * 2 : dropDistance;
+      // Calculate new level
+      const newLevel = state.scoreManager.calculateLevelProgress(
+        state.totalLinesCleared + clearedLines
+      );
 
-    set((state) => {
-      const newTotalLines = state.totalLinesCleared + clearedLines;
-      const newLevel = Math.floor(newTotalLines / 10) + 1;
-      const levelMultiplier = newLevel;
+      // Update state with new combo count and level
+      set((state) => ({
+        score: state.score + additionalPoints,
+        linesCleared: state.linesCleared + clearedLines,
+        totalLinesCleared: state.totalLinesCleared + clearedLines,
+        level: newLevel,
+        comboCount: state.comboCount + 1,
+        lastLineClear: clearedLines,
+      }));
 
-      // Calculate total score
-      const lineClearScore = basePoints * levelMultiplier * comboMultiplier;
-      const totalScore = state.score + lineClearScore + dropBonus;
-
-      // Update gravity speed based on level
+      // Update gravity speed if level changed
       if (newLevel !== state.level) {
-        const newSpeed = Math.max(100, 800 - (newLevel - 1) * 50);
+        const newSpeed = calculateGravitySpeed(newLevel);
         useGravityStore.getState().setGravitySpeed(newSpeed);
       }
 
-      return {
-        score: totalScore,
-        linesCleared: clearedLines,
-        totalLinesCleared: newTotalLines,
-        level: newLevel,
-        comboCount: currentCombo + 1,
-        lastLineClear: clearedLines,
-      };
-    });
+      // Play combo sound immediately after state update
+      if (state.comboCount + 1 >= 2 && clearedLines !== 4) {
+        const clampedCombo = Math.min(state.comboCount + 1, 5);
+        const comboKey = SOUND_KEYS[`COMBO_${clampedCombo}` as keyof typeof SOUND_KEYS];
+        SoundManager.getInstance().play(comboKey);
+      }
+
+      if (clearedLines === 4) {
+        useUIStore.getState().showPopup('TETRIS!', 'tetris');
+        SoundManager.getInstance().play(SOUND_KEYS.TETRIS);
+      } else if (state.comboCount >= 1) {
+        useUIStore.getState().showPopup(`Combo x${state.comboCount}!`, 'combo');
+      }
+    } else {
+      // No lines cleared - reset combo and update score
+      set((state) => ({
+        score: state.score + additionalPoints,
+        comboCount: 0,
+        lastLineClear: 0,
+      }));
+    }
   },
 
   checkGameOver: () => {

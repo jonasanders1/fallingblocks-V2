@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { TetrominoType } from "../services/utils/tetrominoes";
 import { SPAWN_POSITION } from "../services/utils/board";
 import { useBoardStore } from "./boardStore";
+import { useGravityStore } from "./gravityStore";
 
 interface PieceState {
   currentPiece: {
@@ -84,26 +85,44 @@ export const usePieceStore = create<PieceState>((set) => ({
         y: state.currentPiece.position.y + movement.y,
       };
 
-      // Track drop distance for scoring
-      const dropDistance = movement.y > 0 ? movement.y : 0;
+      // Only move if valid and reset lock delay
+      if (useBoardStore.getState().isValidMove(newPosition)) {
+        // Reset lock delay if moving horizontally or down
+        if (movement.x !== 0 || movement.y > 0) {
+          useGravityStore.getState().resetLockDelay();
+        }
 
-      return {
-        currentPiece: {
-          ...state.currentPiece,
-          position: newPosition,
-        },
-        lastDropDistance: dropDistance,
-        isHardDrop: isHardDrop,
-      };
+        // Track drop distance for scoring
+        const dropDistance = movement.y > 0 ? movement.y : 0;
+
+        return {
+          currentPiece: {
+            ...state.currentPiece,
+            position: newPosition,
+          },
+          lastDropDistance: dropDistance,
+          isHardDrop: isHardDrop,
+        };
+      }
+      return state;
     }),
 
   rotatePiece: () =>
-    set((state) => ({
-      currentPiece: {
-        ...state.currentPiece,
-        rotation: (state.currentPiece.rotation + 1) % 4,
-      },
-    })),
+    set((state) => {
+      const newRotation = (state.currentPiece.rotation + 1) % 4;
+      
+      // Only rotate if valid and reset lock delay
+      if (useBoardStore.getState().isValidMove(state.currentPiece.position, newRotation)) {
+        useGravityStore.getState().resetLockDelay();
+        return {
+          currentPiece: {
+            ...state.currentPiece,
+            rotation: newRotation,
+          },
+        };
+      }
+      return state;
+    }),
 
   holdCurrentPiece: () =>
     set((state) => {

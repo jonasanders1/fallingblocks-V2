@@ -12,6 +12,8 @@ import { useGravityStore } from "@/stores/gravityStore";
 import Button from "../Shared/Button/Button";
 import { useGameCoordinator } from "@/stores/useGameCoordinator";
 import SidePanel from "./SidePanel/SidePanel";
+import { SoundEffects } from "./SoundEffects";
+import { PopupMessage } from "../PopupMessage";
 
 interface GameContainerProps {
   $isOpponent: boolean;
@@ -127,6 +129,8 @@ const GameContainer = ({ $isOpponent }: GameContainerProps) => {
 
   return (
     <>
+      <SoundEffects />
+      <PopupMessage />
       {isMenuOpen && (
         <Modal
           isOpen={isMenuOpen}

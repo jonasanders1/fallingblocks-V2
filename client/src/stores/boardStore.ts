@@ -5,8 +5,8 @@ import { TETROMINOES, TetrominoType } from "../services/utils/tetrominoes";
 import { usePieceStore } from "./pieceStore";
 import { useGameStore } from "./gameStore";
 import { useGravityStore } from "./gravityStore";
-import { playSound } from "@/services/utils/playSound";
-import dropSound from "@/assets/sounds/drop.mp3";
+import { SoundManager } from "@/services/game/SoundManager";
+import { SOUND_ASSETS } from "@/constants/sounds";
 
 interface BoardStore {
   board: (TetrominoType | null)[][];
@@ -21,6 +21,9 @@ interface BoardStore {
   dropPiece: () => void;
   resetBoard: () => void;
 }
+
+const soundManager = SoundManager.getInstance();
+soundManager.preloadSounds(SOUND_ASSETS);
 
 type CellContent = {
   type: "empty" | "ghost" | "filled";
@@ -38,7 +41,6 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
   ) => {
     const piece = TETROMINOES[usePieceStore.getState().currentPiece.type];
     const rotatedShape = rotateMatrix(piece.shape, rotation);
-
     for (let y = 0; y < rotatedShape.length; y++) {
       for (let x = 0; x < rotatedShape[y].length; x++) {
         if (rotatedShape[y][x]) {
@@ -140,8 +142,9 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
 
     // Clear lines and update score with drop information
     const linesCleared = get().clearLines();
-    // Always call updateScore to handle combo reset when no lines are cleared
-    useGameStore.getState().updateScore(linesCleared, isHardDrop, lastDropDistance);
+    useGameStore
+      .getState()
+      .updateScore(linesCleared, isHardDrop, lastDropDistance);
 
     // Reset drop state
     pieceStore.resetDropState();
@@ -166,7 +169,6 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
         position: dropPosition,
       },
     }));
-    playSound(dropSound);
     useBoardStore.getState().lockPiece();
   },
 
