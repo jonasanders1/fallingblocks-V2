@@ -7,8 +7,8 @@ import { calculateGravitySpeed } from "@/services/utils/gravity";
 interface GravityStore {
   gravitySpeed: number;
   isPlaying: boolean;
-  gravityTimer: NodeJS.Timeout | null;
-  lockDelayTimer: NodeJS.Timeout | null;
+  gravityTimer: ReturnType<typeof setInterval> | null;
+  lockDelayTimer: ReturnType<typeof setTimeout> | null;
   startGravity: () => void;
   stopGravity: () => void;
   setGravitySpeed: (speed: number) => void;

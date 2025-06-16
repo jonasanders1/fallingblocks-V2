@@ -7,7 +7,7 @@ import { useBoardStore } from "./boardStore";
 import { SoundManager } from "@/services/game/SoundManager";
 import { SOUND_ASSETS, SOUND_KEYS } from "@/constants/sounds";
 import { calculateGravitySpeed } from "@/services/utils/gravity";
-import { useUIStore } from '@/stores/UIStore';
+import { useUIStore } from '@/stores/uiStore';
 
 interface GameStore {
   score: number;
@@ -16,7 +16,7 @@ interface GameStore {
   totalLinesCleared: number;
   timeRemaining: number;
   elapsedTime: number;
-  timerInterval: NodeJS.Timeout | null;
+  timerInterval: ReturnType<typeof setInterval> | null;
   isGameOver: boolean;
   gameOverReason: "blockout" | "timeout" | "lockout" | null;
   comboCount: number;
